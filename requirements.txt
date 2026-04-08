@@ -1,0 +1,32 @@
+# DEMtoMesh - Dependencies
+# Install: pip install -r requirements.txt
+
+# === DEM Processing ===
+rasterio              # Read/write georeferenced rasters (GeoTIFF)
+numpy                 # Array operations on DEM data
+scipy                 # Hillshade, slope, curvature calculations
+geopandas             # Vector/geospatial data handling
+shapely               # Geometric operations on feature boundaries
+
+# === Visualization ===
+matplotlib            # Plotting DEMs, features, meshes
+
+# === Vision Models (Feature Detection) ===
+torch                 # PyTorch backend for all models
+transformers          # Hugging Face — Molmo, Florence-2
+Pillow                # Image handling for model input
+
+# === Segmentation ===
+segment-geospatial    # SamGeo — SAM for georeferenced data
+
+# === LLM Reasoning ===
+anthropic             # Claude API for mesh specification reasoning
+openai                # GPT-4o as alternative reasoning engine
+
+# === Mesh Generation ===
+gmsh                  # Mesh generation engine (Python API)
+meshio                # Read/write mesh formats (.2dm, .msh, etc.)
+
+# === Notebooks ===
+jupyter               # Interactive development
+ipykernel             # Jupyter kernel for venv
