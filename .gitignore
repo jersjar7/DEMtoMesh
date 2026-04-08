@@ -30,4 +30,5 @@ env/
 .ipynb_checkpoints/
 
 # Project-specific
-docs/
+docs/*
+!docs/audits/
