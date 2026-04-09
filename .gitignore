@@ -35,7 +35,8 @@ docs/*
 !docs/model-outputs/
 !docs/research/
 
-# Data (large raster/mesh files)
+# Data (large/generated files)
+data/output/
 *.tif
 *.tiff
 *.2dm
