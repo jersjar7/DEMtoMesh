@@ -32,3 +32,11 @@ env/
 # Project-specific
 docs/*
 !docs/audits/
+!docs/model-outputs/
+!docs/research/
+
+# Data (large raster/mesh files)
+*.tif
+*.tiff
+*.2dm
+*.msh
