@@ -128,4 +128,16 @@ This separates **geometry extraction** (slope map + Molmo 2) from **feature clas
 
 ---
 
-*Audit based on notebooks `01_gemma4_satellite.ipynb`, `02_molmo2_satellite.ipynb`, `03_qwen25vl_satellite.ipynb`, and `04_florence2_satellite.ipynb` in `notebooks/attempt2/`. Conducted April 10, 2026.*
+---
+
+## 6. Postscript — Attempt 3 Outcome
+
+The proposed Attempt 3 pipeline (Section 4) was implemented and tested. **Molmo2 failed at dense line tracing.** The model is designed for discrete object pointing (1–50 points), not continuous line following (hundreds of densely-spaced points). On 17 tiles:
+- Molmo2-8B + bitsandbytes quantization on CUDA: vision encoder produced garbage (`!!!!!!`)
+- Molmo2-4B + float16 on T4: only 107 scattered points, not along dark lines
+
+**Revised conclusion:** Geometry extraction from the slope map should use **classical computer vision** (Canny edge detection, ridge detection, skeletonization), not VLMs. The classification step (Gemma 4 on satellite) remains valid. See `04-10-2026-attempt3-slope-tracing-findings.md` for full details.
+
+---
+
+*Audit based on notebooks `01_gemma4_satellite.ipynb`, `02_molmo2_satellite.ipynb`, `03_qwen25vl_satellite.ipynb`, and `04_florence2_satellite.ipynb` in `notebooks/attempt2/`. Updated April 10, 2026 with Attempt 3 postscript.*

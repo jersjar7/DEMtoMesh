@@ -97,26 +97,37 @@
 
 ---
 
-## Stage 7 (Revised): SAM Segmentation
+## Stage 7 (Revised): Slope Map Line Extraction
 
-### 7.1 Tiled Slope Tracing Pipeline (Attempt 3)
-- [ ] Create `attempt3` folder and tiled slope tracing notebook
-- [ ] Tile slope map into ~1024x1024 tiles with overlap
-- [ ] Feed each tile to Molmo 2: "Trace all dark lines"
-- [ ] Stitch tile results into full-image georeferenced polylines
-- [ ] Use Gemma 4 + satellite to classify each line (channel bank, road, terrace, etc.)
-- [ ] Feed classified lines + vertex spacing to SAM / mesh generator
+### 7.1 Tiled Slope Tracing via Molmo2 (Attempt 3) — FAILED
+- [x] Create `attempt3` folder and tiled slope tracing notebook
+- [x] Tile slope map into 1024x1024 tiles with 128px overlap (17 tiles)
+- [!] Feed each tile to Molmo 2: "Trace all dark lines" — **failed**
+- [!] Stitch tile results into full-image georeferenced polylines — only 107 sparse, scattered points
+- [ ] ~~Use Gemma 4 + satellite to classify each line~~ — insufficient geometry to classify
+- [ ] ~~Feed classified lines + vertex spacing to mesh generator~~ — deferred to Attempt 4
 
-### 7.2 DEM-Guided Mask Refinement
-- [ ] Map SAM satellite masks to DEM pixel grid (same CRS, resample if needed)
-- [ ] Use DEM curvature to refine mask edges — snap to curvature peaks (breaklines)
+**Attempt 3 findings (see `04-10-2026-attempt3-slope-tracing-findings.md`):**
+- Molmo2-8B + bitsandbytes (4-bit and 8-bit) on CUDA: vision encoder broken (`!!!!!!` output)
+- Molmo2-4B + float16 on T4: ran but only 107 scattered points, not tracing lines
+- Molmo2 is designed for discrete object pointing, not dense line tracing
+- **Conclusion:** VLMs are the wrong tool for line extraction. Pivot to classical CV.
+
+### 7.2 Classical CV Line Extraction (Attempt 4) — NEXT
+- [ ] Create `attempt4` folder and classical CV notebook
+- [ ] Apply Canny edge detection on slope map
+- [ ] Apply ridge detection (Hessian-based) on slope map
+- [ ] Skeletonize detected edges to single-pixel-wide lines
+- [ ] Convert skeleton pixels to polyline segments (connected component tracing)
+- [ ] Deduplicate and simplify polylines (Douglas-Peucker)
+- [ ] Convert to georeferenced coordinates
+- [ ] Use Gemma 4 + satellite to classify each polyline by feature type
+- [ ] Visualize: overlay extracted lines on slope map and satellite image
+
+### 7.3 DEM-Guided Refinement (if needed)
+- [ ] Use DEM curvature to refine edge locations — snap to curvature peaks (breaklines)
 - [ ] Use DEM slope to refine channel bank edges — snap to high-slope boundaries
-- [ ] Compare: raw SAM mask vs. DEM-refined mask — visualize improvement
-
-### 7.3 SAM Directly on DEM Derivatives (Experimental)
-- [ ] Run SAM on hillshade image (SAM doesn't care if it's a photo or terrain rendering)
-- [ ] Run SAM on slope map — channel banks have high visual contrast
-- [ ] Compare: SAM on satellite vs. SAM on hillshade — which produces tighter masks?
+- [ ] Compare: raw CV edges vs. DEM-refined edges — visualize improvement
 
 ---
 
@@ -145,15 +156,16 @@
 
 ---
 
-## Model Availability & Priority
+## Model Availability & Status
 
-| Model | Input | Method | Priority | Status |
-|-------|-------|--------|----------|--------|
-| Gemma 4 | Satellite | Qualitative descriptions (API) | 1 — baseline | Ready |
-| Qwen2.5-VL | Satellite | Bbox grounding (API) | 2 — test localization | Ready |
-| Florence-2 | Satellite | Detection + grounding (local) | 3 — test local detection | Ready (fixed) |
-| Molmo 2 | Satellite | Point coordinates (local) | 4 — ideal for SAM prompts | Ready (HF Transformers) |
-| SAM/SamGeo | Satellite + DEM | Segmentation from prompts | 5 — after VLM results | Not started |
+| Model | Input | Method | Status | Notes |
+|-------|-------|--------|--------|-------|
+| Gemma 4 | Satellite | Qualitative descriptions (API) | **Active — classifier** | Best scene understanding; will classify CV-extracted lines |
+| Molmo 2 | Slope map | Point coordinates (local) | **Evaluated — limited** | Good at discrete pointing; cannot trace lines densely |
+| Qwen2.5-VL | Satellite | Bbox grounding (API) | **Evaluated — narrow use** | Only sandbars well-localized; bboxes too loose otherwise |
+| Florence-2 | Satellite | Detection + grounding (local) | **Dropped** | Failed completely on overhead imagery |
+| Classical CV | Slope map | Edge/ridge detection | **Next — Attempt 4** | Canny, Hessian ridge, skeletonization |
+| SAM/SamGeo | Satellite + DEM | Segmentation from prompts | Not started | May use after CV line extraction |
 
 ---
 
