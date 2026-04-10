@@ -71,11 +71,11 @@
 - [x] Compare detection quality to DEM results
 
 ### 6.4 Molmo 2 Pointing on Satellite (Local)
-- [ ] Get Molmo 2 running locally (HuggingFace Transformers, Molmo2-8B)
-- [ ] Test pointing prompts on satellite RGB: "Point to the river channel", "Point to road embankments"
-- [ ] Parse point coordinates and overlay on satellite image
-- [ ] Convert pixel coordinates to geo-coordinates
-- [ ] Evaluate: are points accurate enough to serve as SAM prompts?
+- [x] Get Molmo 2 running locally (HuggingFace Transformers, Molmo2-8B)
+- [x] Test pointing prompts on satellite RGB: "Point to the river channel", "Point to road embankments"
+- [x] Parse point coordinates and overlay on satellite image
+- [x] Convert pixel coordinates to geo-coordinates
+- [x] Evaluate: are points accurate enough to serve as SAM prompts? — yes, channel bends, roads, bridges all usable
 
 ### 6.5 Dual-Input Prompts
 - [ ] Test multi-image prompts (models that support it: Qwen2.5-VL, Gemma 4)
@@ -84,14 +84,28 @@
 
 ---
 
+## Stage 6 Results & Pipeline Pivot
+
+- **Gemma 4:** Excellent qualitative descriptions of satellite imagery, but produces no spatial output (no coordinates, no bounding boxes).
+- **Molmo 2:** Usable point coordinates — 47 road points, 13 channel bends, 2 bridges identified and georeferenced.
+- **Qwen2.5-VL:** Loose bounding boxes; only sandbars were well-localized. Other features had bboxes too coarse for downstream use.
+- **Florence-2:** Failed completely on satellite imagery — no meaningful detections.
+
+**Key insight:** The slope map already shows hydraulic and infrastructure features as dark lines (high slope = sharp terrain breaks). Instead of forcing VLMs to segment features from scratch, **Attempt 3** will exploit this:
+
+> Tile slope map --> Molmo 2 traces dark lines --> Gemma 4 classifies each line (channel bank, road, terrace, etc.) --> Engineer sets vertex spacing for mesh generation.
+
+---
+
 ## Stage 7 (Revised): SAM Segmentation
 
-### 7.1 SAM on Satellite Imagery
-- [ ] Install `segment-geospatial` (SamGeo)
-- [ ] Feed VLM-generated point coordinates as SAM point prompts
-- [ ] Feed VLM-generated bounding boxes as SAM box prompts
-- [ ] Generate segmentation masks on satellite image
-- [ ] Visualize: overlay masks on satellite image
+### 7.1 Tiled Slope Tracing Pipeline (Attempt 3)
+- [ ] Create `attempt3` folder and tiled slope tracing notebook
+- [ ] Tile slope map into ~1024x1024 tiles with overlap
+- [ ] Feed each tile to Molmo 2: "Trace all dark lines"
+- [ ] Stitch tile results into full-image georeferenced polylines
+- [ ] Use Gemma 4 + satellite to classify each line (channel bank, road, terrace, etc.)
+- [ ] Feed classified lines + vertex spacing to SAM / mesh generator
 
 ### 7.2 DEM-Guided Mask Refinement
 - [ ] Map SAM satellite masks to DEM pixel grid (same CRS, resample if needed)
