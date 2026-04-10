@@ -14,7 +14,14 @@ matplotlib            # Plotting DEMs, features, meshes
 # === Vision Models (Feature Detection) ===
 torch                 # PyTorch backend for all models
 transformers          # Hugging Face — Molmo, Florence-2
+accelerate            # HF device_map="auto" support
+einops                # Tensor operations (Molmo2 dependency)
 Pillow                # Image handling for model input
+
+# === Satellite Data ===
+pystac-client         # STAC API client for Planetary Computer catalog search
+planetary-computer    # Anonymous SAS token signing for Azure Blob Storage
+rioxarray             # xarray extension for raster data with CRS support
 
 # === Segmentation ===
 segment-geospatial    # SamGeo — SAM for georeferenced data

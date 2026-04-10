@@ -17,19 +17,19 @@
 ## Stage 5 (Revised): Satellite Data Acquisition
 
 ### 5.1 Download NAIP Imagery
-- [ ] Install satellite dependencies: `pip install pystac-client planetary-computer rioxarray`
-- [ ] Create notebook `05_satellite_acquisition.ipynb`
-- [ ] Query Microsoft Planetary Computer STAC API for NAIP tiles covering the DEM bounding box
-- [ ] Download most recent NAIP imagery (target: 2021 or 2023, 0.6m resolution, RGBN)
-- [ ] Clip to DEM extent + 500m buffer on all sides
-- [ ] Reproject to EPSG:26914 (match DEM CRS) if needed
-- [ ] Save as `data/input/cimarron_naip_rgb.tif` (3-band) and `cimarron_naip_rgbn.tif` (4-band)
-- [ ] Export satellite PNG for vision model input: `data/output/cimarron_satellite.png`
+- [x] Install satellite dependencies: `pip install pystac-client planetary-computer rioxarray`
+- [x] Create notebook `05_satellite_acquisition.ipynb`
+- [x] Query Microsoft Planetary Computer STAC API for NAIP tiles covering the DEM bounding box
+- [x] Download most recent NAIP imagery (target: 2021 or 2023, 0.6m resolution, RGBN)
+- [x] Clip to DEM extent + 500m buffer on all sides
+- [x] Reproject to EPSG:26914 (match DEM CRS) if needed
+- [x] Save as `data/input/cimarron_naip_rgb.tif` (3-band) and `cimarron_naip_rgbn.tif` (4-band)
+- [x] Export satellite PNG for vision model input: `data/output/cimarron_satellite.png`
 
 ### 5.2 Verify Alignment
-- [ ] Overlay satellite PNG on hillshade PNG — confirm spatial alignment
-- [ ] Plot side-by-side: satellite vs. hillshade vs. slope vs. curvature
-- [ ] Document satellite metadata: source, date, resolution, CRS, bounds
+- [x] Overlay satellite PNG on hillshade PNG — confirm spatial alignment
+- [x] Plot side-by-side: satellite vs. hillshade vs. slope vs. curvature
+- [x] Document satellite metadata: source, date, resolution, CRS, bounds
 
 ### Bounding Box Reference
 
@@ -53,25 +53,25 @@
 ## Stage 6 (Revised): VLM Feature Detection on Satellite Imagery
 
 ### 6.1 Gemma 4 on Satellite
-- [ ] Create notebook `06_satellite_feature_detection.ipynb`
-- [ ] Run general survey prompt on satellite RGB image
-- [ ] Run targeted prompts: channel, floodplain, ridges, roads, vegetation boundaries
-- [ ] Compare quality to Gemma 4 on DEM hillshade (notebook 01)
+- [x] Create notebook `06_satellite_feature_detection.ipynb`
+- [x] Run general survey prompt on satellite RGB image
+- [x] Run targeted prompts: channel, floodplain, ridges, roads, vegetation boundaries
+- [x] Compare quality to Gemma 4 on DEM hillshade (notebook 01)
 
 ### 6.2 Qwen2.5-VL Grounding on Satellite
-- [ ] Run bbox grounding prompts on satellite RGB
-- [ ] Test: channel detection, road detection, vegetation boundaries
-- [ ] Compare bbox quality to DEM results (expect significant improvement)
-- [ ] If bboxes are localized, proceed to SAM handoff
+- [x] Run bbox grounding prompts on satellite RGB
+- [x] Test: channel detection, road detection, vegetation boundaries
+- [x] Compare bbox quality to DEM results (expect significant improvement)
+- [x] If bboxes are localized, proceed to SAM handoff
 
 ### 6.3 Florence-2 Detection on Satellite
-- [ ] Run `<OD>` (object detection) on satellite RGB
-- [ ] Run `<CAPTION_TO_PHRASE_GROUNDING>` with hydraulic feature phrases
-- [ ] Run `<DENSE_REGION_CAPTION>` for open-ended detection
-- [ ] Compare detection quality to DEM results
+- [x] Run `<OD>` (object detection) on satellite RGB
+- [x] Run `<CAPTION_TO_PHRASE_GROUNDING>` with hydraulic feature phrases
+- [x] Run `<DENSE_REGION_CAPTION>` for open-ended detection
+- [x] Compare detection quality to DEM results
 
 ### 6.4 Molmo 2 Pointing on Satellite (Local)
-- [ ] Get Molmo 2 running locally (HuggingFace transformers or Ollama)
+- [ ] Get Molmo 2 running locally (HuggingFace Transformers, Molmo2-8B)
 - [ ] Test pointing prompts on satellite RGB: "Point to the river channel", "Point to road embankments"
 - [ ] Parse point coordinates and overlay on satellite image
 - [ ] Convert pixel coordinates to geo-coordinates
@@ -138,7 +138,7 @@
 | Gemma 4 | Satellite | Qualitative descriptions (API) | 1 — baseline | Ready |
 | Qwen2.5-VL | Satellite | Bbox grounding (API) | 2 — test localization | Ready |
 | Florence-2 | Satellite | Detection + grounding (local) | 3 — test local detection | Ready (fixed) |
-| Molmo 2 | Satellite | Point coordinates (local) | 4 — ideal for SAM prompts | Needs local setup |
+| Molmo 2 | Satellite | Point coordinates (local) | 4 — ideal for SAM prompts | Ready (HF Transformers) |
 | SAM/SamGeo | Satellite + DEM | Segmentation from prompts | 5 — after VLM results | Not started |
 
 ---

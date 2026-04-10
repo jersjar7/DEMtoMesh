@@ -121,7 +121,7 @@ The AI does 80% of the work in minutes. The engineer reviews, adjusts, and appro
 - **IDE:** VS Code + Jupyter extension
 - **DEM handling:** rasterio, numpy, scipy
 - **Visualization:** matplotlib
-- **Vision models:** Molmo (transformers), Florence-2 (transformers)
+- **Vision models:** Molmo2-8B (HuggingFace, local), Florence-2 (transformers), Gemma 4, Qwen2.5-VL
 - **Segmentation:** segment-geospatial (SamGeo)
 - **LLM reasoning:** anthropic / openai SDKs
 - **Mesh generation:** gmsh (Python API)
